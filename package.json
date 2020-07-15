@@ -1,0 +1,29 @@
+{
+  "name": "@pairohit/formrop",
+  "version": "1.0.0",
+  "description": "React custom hook to handle forms",
+  "main": "src/index.js",
+  "keywords": [
+    "React",
+    "Forms"
+  ],
+  "author": "PaiRohit",
+  "license": "Open Source",
+  "homepage": "https://github.com/pairohit16/formrop",
+  "repository": {
+    "url": "https://github.com/pairohit16/formrop",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/pairohit16/formrop/issues"
+  },
+  "contributors": [
+    "PaiRohit"
+  ],
+  "maintainers": [
+    "PaiRohit"
+  ],
+  "peerDependencies": {
+    "react": "^16.8.0"
+  }
+}
