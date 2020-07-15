@@ -11,10 +11,10 @@ import { useFormrop } from "@pairohit/formrop";
 const initProps = { email: "", password: "" };
 export function Form(props) {
   const [
-    credentials,
-    dynamiCredentials,
-    manualCredentials,
-    resetCredentials,
+    credentials,        // <= gives values
+    dynamiCredentials,  // <= dynamically handles onChange
+    manualCredentials,  // <= manually can change values
+    resetCredentials,   // <= resets all values
   ] = useFormrop(initProps);
 
   /**How to use manualCredentials ??
