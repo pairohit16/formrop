@@ -1,14 +1,16 @@
 {
   "name": "@pairohit/formrop",
   "version": "1.0.0",
-  "description": "React custom hook to handle forms",
+  "description": "React simple hook to handle small as well as large inputs in forms",
   "main": "src/index.js",
   "keywords": [
     "React",
-    "Forms"
+    "Forms",
+    "Formik",
+    "hooks"
   ],
   "author": "PaiRohit",
-  "license": "Open Source",
+  "license": "MIT",
   "homepage": "https://github.com/pairohit16/formrop",
   "repository": {
     "url": "https://github.com/pairohit16/formrop",
