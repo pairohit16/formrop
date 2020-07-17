@@ -1,6 +1,6 @@
 {
   "name": "@pairohit/formrop",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "React simple hook to handle small as well as large inputs in forms",
   "main": "src/index.js",
   "keywords": [

@@ -10,7 +10,7 @@ export function useFormrop(initState) {
       let value = target.value || "";
       switch (type) {
         case "number":
-          value = parseInt(value);
+          value = parseInt(value) || "";
           break;
         case "url":
           value = value.startsWith("http") ? value : "";
