@@ -21,6 +21,7 @@ export function useFormrop(
           value = parseInt(value) || "";
           break;
         case "url":
+          // @ts-ignore
           value = value.startsWith("http") ? value : "";
       }
       setValue((preState) => {
