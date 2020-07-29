@@ -1,6 +1,6 @@
 {
   "name": "@pairohit/formrop",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "React simple hook to handle small as well as large inputs in forms",
   "main": "src/index.js",
   "keywords": [
@@ -26,6 +26,11 @@
     "PaiRohit"
   ],
   "peerDependencies": {
-    "react": "^16.8.0"
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.43",
+    "react": "^16.13.1",
+    "typescript": "^3.9.7"
   }
 }

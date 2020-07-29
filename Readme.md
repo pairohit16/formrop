@@ -1,6 +1,6 @@
 # Formrop
 
-_Simple Alternative to Formik_
+_Simple Alternative to Formik_ + Typescript
 
 `Example`
 

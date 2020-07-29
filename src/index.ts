@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 
-export function useFormrop(initState) {
+export function useFormrop(
+  initState: object
+): [
+  object,
+  (event: React.ChangeEvent<HTMLInputElement>) => void,
+  (value: object) => void,
+  (value: React.SetStateAction<object>) => void
+] {
   const [value, setValue] = useState(initState);
   return [
     value,
-    ({ target }) => {
+    ({ target }: React.ChangeEvent<HTMLInputElement>): void => {
       const type = target.type;
       const key = target.name;
-      let value = target.value || "";
+      let value: string | number = target.value || "";
+
       switch (type) {
         case "number":
           value = parseInt(value) || "";
@@ -19,7 +27,7 @@ export function useFormrop(initState) {
         return { ...preState, [key]: value };
       });
     },
-    (value) => {
+    (value: object) => {
       if (value) setValue((prevState) => ({ ...prevState, ...value }));
     },
     () => setValue(initState),
