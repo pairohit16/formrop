@@ -39,7 +39,9 @@ function useFormrop(initState) {
             if (value)
                 setValue(function (prevState) { return (__assign(__assign({}, prevState), value)); });
         },
-        function () { return setValue(initState); },
+        function () {
+            setValue(initState);
+        },
     ];
 }
 exports.useFormrop = useFormrop;

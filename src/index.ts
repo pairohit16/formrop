@@ -1,17 +1,17 @@
-import React, { useState } from "react";
+import { useState, Dispatch, SetStateAction, ChangeEvent } from "react";
 
-export function useFormrop(
-  initState: object
+export function useFormrop<S>(
+  initState: S
 ): [
-  object,
-  (event: React.ChangeEvent<HTMLInputElement>) => void,
-  (value: object) => void,
-  (value: React.SetStateAction<object>) => void
+  S,
+  (event: ChangeEvent<HTMLInputElement>) => void,
+  Dispatch<SetStateAction<S>>,
+  () => void
 ] {
   const [value, setValue] = useState(initState);
   return [
     value,
-    ({ target }: React.ChangeEvent<HTMLInputElement>): void => {
+    ({ target }: ChangeEvent<HTMLInputElement>): void => {
       const type = target.type;
       const key = target.name;
       let value: string | number = target.value || "";
@@ -28,9 +28,11 @@ export function useFormrop(
         return { ...preState, [key]: value };
       });
     },
-    (value: object) => {
+    (value) => {
       if (value) setValue((prevState) => ({ ...prevState, ...value }));
     },
-    () => setValue(initState),
+    () => {
+      setValue(initState);
+    },
   ];
 }
