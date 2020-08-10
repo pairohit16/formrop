@@ -4,14 +4,14 @@ export function useFormrop<S>(
   initState: S
 ): [
   S,
-  (event: ChangeEvent<HTMLInputElement>) => void,
+  (event: ChangeEvent<HTMLInputElement>) => any,
   Dispatch<SetStateAction<S>>,
-  () => void
+  () => any
 ] {
   const [value, setValue] = useState(initState);
   return [
     value,
-    ({ target }: ChangeEvent<HTMLInputElement>): void => {
+    ({ target }: ChangeEvent<HTMLInputElement>): any => {
       const type = target.type;
       const key = target.name;
       let value: string | number = target.value || "";
