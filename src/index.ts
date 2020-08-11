@@ -1,12 +1,12 @@
-import { useState, Dispatch, SetStateAction, ChangeEvent } from "react";
+import { useState, ChangeEvent } from "react";
 
 export function useFormrop<S>(
   initState: S
 ): [
   S,
-  (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => any,
-  Dispatch<SetStateAction<S>>,
-  () => any
+  (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void,
+  (key: Partial<S>) => void,
+  () => void
 ] {
   const [value, setValue] = useState(initState);
   return [
@@ -15,14 +15,13 @@ export function useFormrop<S>(
       const type = target.type;
       const key = target.name;
       let value: string | number = target.value || "";
-
       switch (type) {
         case "number":
           value = parseInt(value) || "";
           break;
         case "url":
-          // @ts-ignore
           value = value.startsWith("http") ? value : "";
+          break;
       }
       setValue((preState) => {
         return { ...preState, [key]: value };
