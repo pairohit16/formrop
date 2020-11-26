@@ -17,8 +17,17 @@ function useFormrop(initState) {
                 case "url":
                     value = value.startsWith("http") ? value : "";
                     break;
+                case "checkbox":
+                    // @ts-ignore
+                    value = target.checked;
+                    break;
             }
             setValue((preState) => {
+                if (key.includes(".")) {
+                    const [out, inner] = key.split(".");
+                    // @ts-ignore
+                    return Object.assign(Object.assign({}, preState), { [out]: Object.assign(Object.assign({}, preState[out]), { [inner]: value }) });
+                }
                 return Object.assign(Object.assign({}, preState), { [key]: value });
             });
         },
