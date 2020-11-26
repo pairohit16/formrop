@@ -35,8 +35,8 @@ function useFormrop(initState) {
             if (value)
                 setValue((prevState) => (Object.assign(Object.assign({}, prevState), value)));
         },
-        () => {
-            setValue(initState);
+        (initWith = {}) => {
+            setValue(Object.assign(Object.assign({}, initState), initWith));
         },
     ];
 }

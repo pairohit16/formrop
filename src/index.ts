@@ -6,7 +6,7 @@ export function useFormrop<S>(
   S,
   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void,
   (key: Partial<S>) => void,
-  () => void
+  (initWith?: Partial<S>) => void
 ] {
   const [value, setValue] = useState(initState);
   return [
@@ -39,8 +39,8 @@ export function useFormrop<S>(
     (value) => {
       if (value) setValue((prevState) => ({ ...prevState, ...value }));
     },
-    () => {
-      setValue(initState);
+    (initWith = {}) => {
+      setValue({ ...initState, ...initWith });
     },
   ];
 }
