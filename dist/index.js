@@ -9,7 +9,7 @@ fillStateifEmpty) {
         if (fillStateifEmpty) {
             const fillState = {};
             Object.entries(initState).forEach(([key, value]) => {
-                if (!fillState[key].toString().length) {
+                if (!value.toString().length) {
                     fillState[key] = fillStateifEmpty[key];
                 }
                 else {
