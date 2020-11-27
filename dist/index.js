@@ -2,8 +2,24 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useFormrop = void 0;
 const react_1 = require("react");
-function useFormrop(initState) {
-    const [value, setValue] = react_1.useState(initState);
+function useFormrop(initState, 
+/** if there is any empty value in init state and you want to fill it use this */
+fillStateifEmpty) {
+    const [value, setValue] = react_1.useState(() => {
+        if (fillStateifEmpty) {
+            const fillState = {};
+            Object.entries(initState).forEach(([key, value]) => {
+                if (!fillState[key]) {
+                    fillState[key] = fillStateifEmpty[key];
+                }
+                else {
+                    fillState[key] = value;
+                }
+            });
+            return fillState;
+        }
+        return initState;
+    });
     return [
         value,
         ({ target }) => {

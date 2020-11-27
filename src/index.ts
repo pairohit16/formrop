@@ -1,14 +1,30 @@
 import { useState, ChangeEvent } from "react";
 
 export function useFormrop<S>(
-  initState: S
+  initState: S,
+  /** if there is any empty value in init state and you want to fill it use this */
+  fillStateifEmpty?: S
 ): [
   S,
   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void,
   (key: Partial<S>) => void,
   (initWith?: Partial<S>) => void
 ] {
-  const [value, setValue] = useState(initState);
+  const [value, setValue] = useState(() => {
+    if (fillStateifEmpty) {
+      const fillState = {};
+      Object.entries(initState).forEach(([key, value]) => {
+        if (!fillState[key]) {
+          fillState[key] = fillStateifEmpty[key];
+        } else {
+          fillState[key] = value;
+        }
+      });
+
+      return fillState as S;
+    }
+    return initState;
+  });
   return [
     value,
     ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>): any => {
