@@ -106,8 +106,8 @@ export function useFormrop<S>(
       setValue({ ...initState, ...initWith });
     },
     {
-      Input: (props) => React.createElement("input", props) as any,
-      TextArea: (props) => React.createElement("textarea", props) as any,
+      Input: (props) => React.createElement("input", { ...props, key: props.name as string }) as any,
+      TextArea: (props) => React.createElement("textarea", { ...props, key: props.name as string }) as any,
       CheckBox: (props) => React.createElement(React.Fragment, {
         children: [
           React.createElement("input", {
@@ -115,6 +115,7 @@ export function useFormrop<S>(
             id: props.name,
             type: "checkbox",
             checked: props.value,
+            key: props.name as string,
           }),
           React.createElement("label", {
             htmlFor: props.name,

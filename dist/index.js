@@ -75,11 +75,11 @@ fillStateifEmpty) {
             setValue(Object.assign(Object.assign({}, initState), initWith));
         },
         {
-            Input: (props) => react_1.default.createElement("input", props),
-            TextArea: (props) => react_1.default.createElement("textarea", props),
+            Input: (props) => react_1.default.createElement("input", Object.assign(Object.assign({}, props), { key: props.name })),
+            TextArea: (props) => react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { key: props.name })),
             CheckBox: (props) => react_1.default.createElement(react_1.default.Fragment, {
                 children: [
-                    react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: props.value })),
+                    react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: props.value, key: props.name })),
                     react_1.default.createElement("label", {
                         htmlFor: props.name,
                         children: props.label,
