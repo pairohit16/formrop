@@ -52,7 +52,7 @@ export function useFormrop<S>(
         React.InputHTMLAttributes<HTMLInputElement>,
         HTMLInputElement
       >;
-      Selection: (props: {
+      Selection: <D = object>(props: {
         name: keyof S;
         value: string | number;
         /** {
@@ -64,9 +64,9 @@ export function useFormrop<S>(
          *    1: 'Yes, i am in',
          *    ....
          * } */
-        data: object;
+        data: D;
         onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-        default?: string | number;
+        default?: keyof D;
         className?: string;
         id?: string;
         style?: React.CSSProperties;

@@ -83,9 +83,18 @@ fillStateifEmpty) {
                     react_1.default.createElement("label", {
                         htmlFor: props.name,
                         children: props.label,
+                        key: (props.name + "#label"),
                     }),
                 ],
             }),
+            Selection: (props) => {
+                return react_1.default.createElement("select", props, Object.entries(props.data).map(([value, label]) => {
+                    return react_1.default.createElement("option", {
+                        key: value,
+                        value: value,
+                    }, label);
+                }));
+            },
             Submit: (props) => react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "submit" })),
         },
     ];
