@@ -20,6 +20,9 @@ export function useFormrop<S>(
         value: string;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         disabled?: boolean | undefined;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLInputElement>,
         HTMLInputElement
@@ -29,6 +32,9 @@ export function useFormrop<S>(
         value: string;
         onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
         disabled?: boolean;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLTextAreaElement>,
         HTMLTextAreaElement
@@ -38,13 +44,42 @@ export function useFormrop<S>(
         name: keyof S;
         value: boolean;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        default?: boolean;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLInputElement>,
         HTMLInputElement
       >;
+      Selection: (props: {
+        name: keyof S;
+        value: string | number;
+        /** {
+         *    value1: label1,
+         *    value2: label2,
+         *    WW: 'World Wide',
+         *    IN: 'India',
+         *    0: 'Don't include',
+         *    1: 'Yes, i am in',
+         *    ....
+         * } */
+        data: object;
+        onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+        default?: string | number;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+      }) => React.DetailedReactHTMLElement<
+        React.SelectHTMLAttributes<HTMLSelectElement>,
+        HTMLSelectElement
+      >;
       Submit: (props: {
         disabled?: boolean;
         children?: string;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLInputElement>,
         HTMLInputElement
@@ -106,24 +141,51 @@ export function useFormrop<S>(
       setValue({ ...initState, ...initWith });
     },
     {
-      Input: (props) => React.createElement("input", { ...props, key: props.name as string }) as any,
-      TextArea: (props) => React.createElement("textarea", { ...props, key: props.name as string }) as any,
-      CheckBox: (props) => React.createElement(React.Fragment, {
-        children: [
-          React.createElement("input", {
-            ...props,
-            id: props.name,
-            type: "checkbox",
-            checked: props.value,
-            key: props.name as string,
-          }),
-          React.createElement("label", {
-            htmlFor: props.name,
-            children: props.label,
-          }),
-        ],
-      }) as any,
-      Submit: (props) => React.createElement("button", { ...props, type: "submit" }) as any,
+      Input: (props) =>
+        React.createElement("input", {
+          ...props,
+          key: props.name as string,
+        }) as any,
+      TextArea: (props) =>
+        React.createElement("textarea", {
+          ...props,
+          key: props.name as string,
+        }) as any,
+      CheckBox: (props) =>
+        React.createElement(React.Fragment, {
+          children: [
+            React.createElement("input", {
+              ...props,
+              id: props.name,
+              type: "checkbox",
+              checked: props.value,
+              key: props.name as string,
+            }),
+            React.createElement("label", {
+              htmlFor: props.name,
+              children: props.label,
+              key: (props.name + "#label") as string,
+            }),
+          ],
+        }) as any,
+      Selection: (props) => {
+        return React.createElement(
+          "select",
+          props,
+          Object.entries(props.data).map(([value, label]) => {
+            return React.createElement(
+              "option",
+              {
+                key: value,
+                value: value,
+              },
+              label
+            );
+          })
+        ) as any;
+      },
+      Submit: (props) =>
+        React.createElement("button", { ...props, type: "submit" }) as any,
     },
   ];
 }
