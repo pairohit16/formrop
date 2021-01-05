@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useMemo } from "react";
 
 export function useFormrop<S>(
   initState: S,
@@ -139,17 +139,11 @@ export function useFormrop<S>(
     (initWith = {}) => {
       setValue({ ...initState, ...initWith });
     },
-    {
+    useMemo(() => ({
       Input: (props) =>
-        React.createElement("input", {
-          ...props,
-          key: props.name as string,
-        }) as any,
+        React.createElement("input", props) as any,
       TextArea: (props) =>
-        React.createElement("textarea", {
-          ...props,
-          key: props.name as string,
-        }) as any,
+        React.createElement("textarea", props) as any,
       CheckBox: ({ value, default: _default, label, ...props }) =>
         React.createElement(React.Fragment, {
           children: [
@@ -159,12 +153,10 @@ export function useFormrop<S>(
               type: "checkbox",
               checked: value,
               defaultChecked: _default,
-              key: props.name as string,
             }),
             React.createElement("label", {
               htmlFor: props.name,
               children: label,
-              key: (props.name + "#label") as string,
             }),
           ],
         }) as any,
@@ -182,13 +174,13 @@ export function useFormrop<S>(
                 key: value,
                 value: value,
               },
-              label
+              label as string
             );
           })
         ) as any;
       },
       Submit: (props) =>
-        React.createElement("button", { ...props, type: "submit" }) as any,
-    },
+        React.createElement("button", { ...props, type: "submit" }),
+    }), []),
   ];
 }

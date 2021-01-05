@@ -85,18 +85,17 @@ fillStateifEmpty) {
         (initWith = {}) => {
             setValue(Object.assign(Object.assign({}, initState), initWith));
         },
-        {
-            Input: (props) => react_1.default.createElement("input", Object.assign(Object.assign({}, props), { key: props.name })),
-            TextArea: (props) => react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { key: props.name })),
+        react_1.useMemo(() => ({
+            Input: (props) => react_1.default.createElement("input", props),
+            TextArea: (props) => react_1.default.createElement("textarea", props),
             CheckBox: (_a) => {
                 var { value, default: _default, label } = _a, props = __rest(_a, ["value", "default", "label"]);
                 return react_1.default.createElement(react_1.default.Fragment, {
                     children: [
-                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: value, defaultChecked: _default, key: props.name })),
+                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: value, defaultChecked: _default })),
                         react_1.default.createElement("label", {
                             htmlFor: props.name,
                             children: label,
-                            key: (props.name + "#label"),
                         }),
                     ],
                 });
@@ -111,7 +110,7 @@ fillStateifEmpty) {
                 }));
             },
             Submit: (props) => react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "submit" })),
-        },
+        }), []),
     ];
 }
 exports.useFormrop = useFormrop;
