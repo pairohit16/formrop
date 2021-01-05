@@ -18,6 +18,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useFormrop = void 0;
 const react_1 = __importStar(require("react"));
@@ -77,18 +88,22 @@ fillStateifEmpty) {
         {
             Input: (props) => react_1.default.createElement("input", Object.assign(Object.assign({}, props), { key: props.name })),
             TextArea: (props) => react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { key: props.name })),
-            CheckBox: (props) => react_1.default.createElement(react_1.default.Fragment, {
-                children: [
-                    react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: props.value, key: props.name })),
-                    react_1.default.createElement("label", {
-                        htmlFor: props.name,
-                        children: props.label,
-                        key: (props.name + "#label"),
-                    }),
-                ],
-            }),
-            Selection: (props) => {
-                return react_1.default.createElement("select", props, Object.entries(props.data).map(([value, label]) => {
+            CheckBox: (_a) => {
+                var { value, default: _default, label } = _a, props = __rest(_a, ["value", "default", "label"]);
+                return react_1.default.createElement(react_1.default.Fragment, {
+                    children: [
+                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: value, defaultChecked: _default, key: props.name })),
+                        react_1.default.createElement("label", {
+                            htmlFor: props.name,
+                            children: label,
+                            key: (props.name + "#label"),
+                        }),
+                    ],
+                });
+            },
+            Selection: (_a) => {
+                var { data, default: _default } = _a, props = __rest(_a, ["data", "default"]);
+                return react_1.default.createElement("select", Object.assign(Object.assign({}, props), { defaultValue: _default }), Object.entries(data).map(([value, label]) => {
                     return react_1.default.createElement("option", {
                         key: value,
                         value: value,

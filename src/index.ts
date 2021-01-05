@@ -46,7 +46,6 @@ export function useFormrop<S>(
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         default?: boolean;
         className?: string;
-        id?: string;
         style?: React.CSSProperties;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLInputElement>,
@@ -151,28 +150,32 @@ export function useFormrop<S>(
           ...props,
           key: props.name as string,
         }) as any,
-      CheckBox: (props) =>
+      CheckBox: ({ value, default: _default, label, ...props }) =>
         React.createElement(React.Fragment, {
           children: [
             React.createElement("input", {
               ...props,
               id: props.name,
               type: "checkbox",
-              checked: props.value,
+              checked: value,
+              defaultChecked: _default,
               key: props.name as string,
             }),
             React.createElement("label", {
               htmlFor: props.name,
-              children: props.label,
+              children: label,
               key: (props.name + "#label") as string,
             }),
           ],
         }) as any,
-      Selection: (props) => {
+      Selection: ({ data, default: _default, ...props }) => {
         return React.createElement(
           "select",
-          props,
-          Object.entries(props.data).map(([value, label]) => {
+          {
+            ...props,
+            defaultValue: _default
+          },
+          Object.entries(data).map(([value, label]) => {
             return React.createElement(
               "option",
               {

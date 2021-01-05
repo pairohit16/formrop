@@ -28,7 +28,6 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         default?: boolean;
         className?: string;
-        id?: string;
         style?: React.CSSProperties;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     Selection: <D = object>(props: {
