@@ -12,6 +12,7 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         className?: string;
         id?: string;
         style?: React.CSSProperties;
+        autoFocus?: boolean;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     TextArea: (props: {
         name: keyof S;
@@ -21,6 +22,7 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         className?: string;
         id?: string;
         style?: React.CSSProperties;
+        autoFocus?: boolean;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
     CheckBox: (props: {
         label: string;

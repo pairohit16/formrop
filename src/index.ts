@@ -24,6 +24,7 @@ export function useFormrop<S>(
         className?: string;
         id?: string;
         style?: React.CSSProperties;
+        autoFocus?: boolean;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLInputElement>,
         HTMLInputElement
@@ -36,6 +37,7 @@ export function useFormrop<S>(
         className?: string;
         id?: string;
         style?: React.CSSProperties;
+        autoFocus?: boolean;
       }) => React.DetailedReactHTMLElement<
         React.InputHTMLAttributes<HTMLTextAreaElement>,
         HTMLTextAreaElement
