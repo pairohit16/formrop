@@ -19,6 +19,7 @@ export function useFormrop<S>(
         name: keyof S;
         value: string;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        modifier?: "toLowerCase" | "toUpperCase";
         disabled?: boolean | undefined;
         className?: string;
         id?: string;
@@ -124,6 +125,10 @@ export function useFormrop<S>(
           value = target.checked;
           break;
       }
+      // check for modifier 
+      const modifier = target.dataset.modifier;
+      if (modifier && typeof value === "string") value = value[modifier]();
+
       setValue((preState) => {
         if (key.includes(".")) {
           const [out, inner] = key.split(".");
@@ -139,9 +144,13 @@ export function useFormrop<S>(
     (initWith = {}) => {
       setValue({ ...initState, ...initWith });
     },
+    // components
     useMemo(() => ({
-      Input: (props) =>
-        React.createElement("input", props) as any,
+      Input: ({ modifier, ...props }) =>
+        React.createElement("input", {
+          ...props,
+          ["data-modifier"]: modifier,
+        }) as any,
       TextArea: (props) =>
         React.createElement("textarea", props) as any,
       CheckBox: ({ value, default: _default, label, ...props }) =>

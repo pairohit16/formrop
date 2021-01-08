@@ -7,6 +7,7 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         name: keyof S;
         value: string;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        modifier?: "toLowerCase" | "toUpperCase";
         disabled?: boolean | undefined;
         className?: string;
         id?: string;

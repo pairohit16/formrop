@@ -69,6 +69,10 @@ fillStateifEmpty) {
                     value = target.checked;
                     break;
             }
+            // check for modifier 
+            const modifier = target.dataset.modifier;
+            if (modifier && typeof value === "string")
+                value = value[modifier]();
             setValue((preState) => {
                 if (key.includes(".")) {
                     const [out, inner] = key.split(".");
@@ -85,8 +89,12 @@ fillStateifEmpty) {
         (initWith = {}) => {
             setValue(Object.assign(Object.assign({}, initState), initWith));
         },
+        // components
         react_1.useMemo(() => ({
-            Input: (props) => react_1.default.createElement("input", props),
+            Input: (_a) => {
+                var { modifier } = _a, props = __rest(_a, ["modifier"]);
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-modifier"]: modifier }));
+            },
             TextArea: (props) => react_1.default.createElement("textarea", props),
             CheckBox: (_a) => {
                 var { value, default: _default, label } = _a, props = __rest(_a, ["value", "default", "label"]);
