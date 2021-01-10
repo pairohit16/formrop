@@ -1,10 +1,9 @@
 import React, { ChangeEvent } from "react";
-export declare function useFormrop<S>(initState: S, 
-/** if there is any empty value in init state and you want to fill it use this */
-fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
-    Input: (props: {
+export declare function useFormrop<S>(initState: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
+    Input: <N extends keyof S>(props: {
         type: "url" | "text";
-        name: keyof S;
+        name: N;
+        deep?: keyof S[N];
         value: string;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         modifier?: "toLowerCase" | "toUpperCase";
@@ -13,9 +12,11 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         id?: string;
         style?: React.CSSProperties;
         autoFocus?: boolean;
+        placeholder?: string;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-    TextArea: (props: {
-        name: keyof S;
+    TextArea: <N extends keyof S>(props: {
+        name: N;
+        deep?: keyof S[N];
         value: string;
         onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
         disabled?: boolean;
@@ -23,18 +24,20 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
         id?: string;
         style?: React.CSSProperties;
         autoFocus?: boolean;
+        placeholder?: string;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
-    CheckBox: (props: {
+    CheckBox: <N extends keyof S>(props: {
         label: string;
-        name: keyof S;
+        name: N;
+        deep?: keyof S[N];
         value: boolean;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-        default?: boolean;
         className?: string;
         style?: React.CSSProperties;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-    Selection: <D = object>(props: {
-        name: keyof S;
+    Selection: <N extends keyof S>(props: {
+        name: N;
+        deep?: keyof S[N];
         value: string | number;
         /** {
          *    value1: label1,
@@ -45,9 +48,75 @@ fillStateifEmpty?: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaEl
          *    1: 'Yes, i am in',
          *    ....
          * } */
-        data: D;
+        data: Object;
         onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-        default?: keyof D;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+    }) => React.DetailedReactHTMLElement<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
+    Submit: (props: {
+        disabled?: boolean;
+        children?: string;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+}];
+export declare function useFormropArrays<S>(initState: S[]): [S[], (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (value: S[]) => void, (initWith?: S[]) => void, {
+    Input: (props: {
+        type: "url" | "text";
+        name: string;
+        deep?: string;
+        index: number;
+        value: string;
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        modifier?: "toLowerCase" | "toUpperCase";
+        disabled?: boolean | undefined;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+        autoFocus?: boolean;
+        placeholder?: string;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    TextArea: (props: {
+        name: string;
+        deep?: string;
+        index: number;
+        value: string;
+        onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+        disabled?: boolean;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+        autoFocus?: boolean;
+        placeholder?: string;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
+    CheckBox: (props: {
+        label: string;
+        index: number;
+        name: string;
+        deep?: string;
+        value: boolean;
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        className?: string;
+        style?: React.CSSProperties;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    Selection: (props: {
+        index: number;
+        name: string;
+        deep?: string;
+        value: string | number;
+        /** {
+         *    value1: label1,
+         *    value2: label2,
+         *    WW: 'World Wide',
+         *    IN: 'India',
+         *    0: 'Don't include',
+         *    1: 'Yes, i am in',
+         *    ....
+         * } */
+        data: Object;
+        onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
         className?: string;
         id?: string;
         style?: React.CSSProperties;

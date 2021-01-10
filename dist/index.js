@@ -30,32 +30,17 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useFormrop = void 0;
+exports.useFormropArrays = exports.useFormrop = void 0;
 const react_1 = __importStar(require("react"));
-function useFormrop(initState, 
-/** if there is any empty value in init state and you want to fill it use this */
-fillStateifEmpty) {
+function useFormrop(initState) {
     /** Html Inputs design */
-    const [value, setValue] = react_1.useState(() => {
-        if (fillStateifEmpty) {
-            const fillState = {};
-            Object.entries(initState).forEach(([key, value]) => {
-                if (!value.toString().length) {
-                    fillState[key] = fillStateifEmpty[key];
-                }
-                else {
-                    fillState[key] = value;
-                }
-            });
-            return fillState;
-        }
-        return initState;
-    });
+    const [value, setValue] = react_1.useState(() => initState);
     return [
         value,
         ({ target, }) => {
             const type = target.type;
             const key = target.name;
+            const deep = target.dataset.deep;
             let value = target.value || "";
             switch (type) {
                 case "number":
@@ -69,16 +54,13 @@ fillStateifEmpty) {
                     value = target.checked;
                     break;
             }
-            // check for modifier 
+            // check for modifier
             const modifier = target.dataset.modifier;
             if (modifier && typeof value === "string")
                 value = value[modifier]();
             setValue((preState) => {
-                if (key.includes(".")) {
-                    const [out, inner] = key.split(".");
-                    // @ts-ignore
-                    return Object.assign(Object.assign({}, preState), { [out]: Object.assign(Object.assign({}, preState[out]), { [inner]: value }) });
-                }
+                if (deep)
+                    return Object.assign(Object.assign({}, preState), { [key]: Object.assign(Object.assign({}, preState[key]), { [deep]: value }) });
                 return Object.assign(Object.assign({}, preState), { [key]: value });
             });
         },
@@ -92,15 +74,18 @@ fillStateifEmpty) {
         // components
         react_1.useMemo(() => ({
             Input: (_a) => {
-                var { modifier } = _a, props = __rest(_a, ["modifier"]);
-                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-modifier"]: modifier }));
+                var { deep, modifier } = _a, props = __rest(_a, ["deep", "modifier"]);
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-modifier"]: modifier, ["data-deep"]: deep }));
             },
-            TextArea: (props) => react_1.default.createElement("textarea", props),
+            TextArea: (_a) => {
+                var { deep } = _a, props = __rest(_a, ["deep"]);
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }));
+            },
             CheckBox: (_a) => {
-                var { value, default: _default, label } = _a, props = __rest(_a, ["value", "default", "label"]);
+                var { deep, value, label } = _a, props = __rest(_a, ["deep", "value", "label"]);
                 return react_1.default.createElement(react_1.default.Fragment, {
                     children: [
-                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { id: props.name, type: "checkbox", checked: value, defaultChecked: _default })),
+                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-deep"]: deep, id: props.name, type: "checkbox", checked: value })),
                         react_1.default.createElement("label", {
                             htmlFor: props.name,
                             children: label,
@@ -109,8 +94,8 @@ fillStateifEmpty) {
                 });
             },
             Selection: (_a) => {
-                var { data, default: _default } = _a, props = __rest(_a, ["data", "default"]);
-                return react_1.default.createElement("select", Object.assign(Object.assign({}, props), { defaultValue: _default }), Object.entries(data).map(([value, label]) => {
+                var { deep, data } = _a, props = __rest(_a, ["deep", "data"]);
+                return react_1.default.createElement("select", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }), Object.entries(data).map(([value, label]) => {
                     return react_1.default.createElement("option", {
                         key: value,
                         value: value,
@@ -122,4 +107,84 @@ fillStateifEmpty) {
     ];
 }
 exports.useFormrop = useFormrop;
+function useFormropArrays(initState) {
+    /** Html Inputs design */
+    const [value, setValue] = react_1.useState(() => initState);
+    return [
+        value,
+        ({ target, }) => {
+            const type = target.type;
+            const name = target.name;
+            const deep = target.dataset.deep;
+            const index = Number(target.dataset.index);
+            let value = target.value || "";
+            switch (type) {
+                case "number":
+                    value = parseInt(value) || "";
+                    break;
+                case "url":
+                    value = value.startsWith("http") ? value : "";
+                    break;
+                case "checkbox":
+                    // @ts-ignore, checked is only avail for checkbox input, typescript is not working properly
+                    value = target.checked;
+                    break;
+            }
+            // check for modifier
+            const modifier = target.dataset.modifier;
+            if (modifier && typeof value === "string")
+                value = value[modifier]();
+            setValue((preState) => {
+                const copy = Array.from(preState);
+                if (deep) {
+                    copy[index][name][deep] = value;
+                }
+                else
+                    copy[index][name] = value;
+                return copy;
+            });
+        },
+        (value) => {
+            if (Array.isArray(value))
+                setValue(value);
+        },
+        () => {
+            setValue(initState);
+        },
+        // components
+        react_1.useMemo(() => ({
+            Input: (_a) => {
+                var { index, deep, modifier } = _a, props = __rest(_a, ["index", "deep", "modifier"]);
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-modifier"]: modifier, ["data-deep"]: deep }));
+            },
+            TextArea: (_a) => {
+                var { index, deep } = _a, props = __rest(_a, ["index", "deep"]);
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }));
+            },
+            CheckBox: (_a) => {
+                var { index, deep, value, label } = _a, props = __rest(_a, ["index", "deep", "value", "label"]);
+                return react_1.default.createElement(react_1.default.Fragment, {
+                    children: [
+                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-deep"]: deep, id: props.name, type: "checkbox", checked: value })),
+                        react_1.default.createElement("label", {
+                            htmlFor: props.name,
+                            children: label,
+                        }),
+                    ],
+                });
+            },
+            Selection: (_a) => {
+                var { index, deep, data } = _a, props = __rest(_a, ["index", "deep", "data"]);
+                return react_1.default.createElement("select", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }), Object.entries(data).map(([value, label]) => {
+                    return react_1.default.createElement("option", {
+                        key: value,
+                        value: value,
+                    }, label);
+                }));
+            },
+            Submit: (props) => react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "submit" })),
+        }), []),
+    ];
+}
+exports.useFormropArrays = useFormropArrays;
 //# sourceMappingURL=index.js.map
