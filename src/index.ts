@@ -337,11 +337,13 @@ export function useFormropArrays<S>(
           React.createElement("input", {
             ...props,
             ["data-modifier"]: modifier,
+            ["data-index"]: index,
             ["data-deep"]: deep,
           }) as any,
         TextArea: ({ index, deep, ...props }) =>
           React.createElement("textarea", {
             ...props,
+            ["data-index"]: index,
             ["data-deep"]: deep,
           }) as any,
         CheckBox: ({ index, deep, value, label, ...props }) =>
@@ -349,6 +351,7 @@ export function useFormropArrays<S>(
             children: [
               React.createElement("input", {
                 ...props,
+                ["data-index"]: index,
                 ["data-deep"]: deep,
                 id: props.name,
                 type: "checkbox",
@@ -365,6 +368,7 @@ export function useFormropArrays<S>(
             "select",
             {
               ...props,
+              ["data-index"]: index,
               ["data-deep"]: deep,
             },
             Object.entries(data).map(([value, label]) => {

@@ -155,17 +155,17 @@ function useFormropArrays(initState) {
         react_1.useMemo(() => ({
             Input: (_a) => {
                 var { index, deep, modifier } = _a, props = __rest(_a, ["index", "deep", "modifier"]);
-                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-modifier"]: modifier, ["data-deep"]: deep }));
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-modifier"]: modifier, ["data-index"]: index, ["data-deep"]: deep }));
             },
             TextArea: (_a) => {
                 var { index, deep } = _a, props = __rest(_a, ["index", "deep"]);
-                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }));
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { ["data-index"]: index, ["data-deep"]: deep }));
             },
             CheckBox: (_a) => {
                 var { index, deep, value, label } = _a, props = __rest(_a, ["index", "deep", "value", "label"]);
                 return react_1.default.createElement(react_1.default.Fragment, {
                     children: [
-                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-deep"]: deep, id: props.name, type: "checkbox", checked: value })),
+                        react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-index"]: index, ["data-deep"]: deep, id: props.name, type: "checkbox", checked: value })),
                         react_1.default.createElement("label", {
                             htmlFor: props.name,
                             children: label,
@@ -175,7 +175,7 @@ function useFormropArrays(initState) {
             },
             Selection: (_a) => {
                 var { index, deep, data } = _a, props = __rest(_a, ["index", "deep", "data"]);
-                return react_1.default.createElement("select", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }), Object.entries(data).map(([value, label]) => {
+                return react_1.default.createElement("select", Object.assign(Object.assign({}, props), { ["data-index"]: index, ["data-deep"]: deep }), Object.entries(data).map(([value, label]) => {
                     return react_1.default.createElement("option", {
                         key: value,
                         value: value,
