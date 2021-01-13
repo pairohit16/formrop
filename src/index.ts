@@ -1,7 +1,9 @@
 import React, { useState, ChangeEvent, useMemo } from "react";
 
+const modifierStore = {};
+type Modifier<V> = (value: V) => V;
 export function useFormrop<S>(
-  initState: S
+  initState: S | (() => S)
 ): [
     S,
     (
@@ -12,13 +14,13 @@ export function useFormrop<S>(
     (key: Partial<S>) => void,
     (initWith?: Partial<S>) => void,
     {
-      Input: <N extends keyof S>(props: {
-        type: "url" | "text";
+      Input: <N extends keyof S, V>(props: {
+        type: "url" | "text" | "number";
         name: N;
         deep?: keyof S[N];
-        value: string;
+        value: V;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-        modifier?: "toLowerCase" | "toUpperCase";
+        modifier?: Modifier<V>;
         disabled?: boolean | undefined;
         className?: string;
         id?: string;
@@ -91,7 +93,7 @@ export function useFormrop<S>(
     }
   ] {
   /** Html Inputs design */
-  const [value, setValue] = useState(() => initState);
+  const [value, setValue] = useState(initState);
   return [
     value,
     ({
@@ -100,10 +102,12 @@ export function useFormrop<S>(
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >): any => {
       const type = target.type;
-      const key = target.name;
+      const name = target.name;
       const deep = target.dataset.deep;
-
+      const isModifier = target.dataset.modifier === "true";
+      const key = name + "" + deep;
       let value: string | number | boolean = target.value || "";
+
       switch (type) {
         case "number":
           value = parseInt(value) || "";
@@ -117,31 +121,45 @@ export function useFormrop<S>(
           break;
       }
       // check for modifier
-      const modifier = target.dataset.modifier;
-      if (modifier && typeof value === "string") value = value[modifier]();
+      if (isModifier) {
+        const modifier = modifierStore[key] as Modifier<typeof value>;
+        value = modifier(value);
+      }
 
       setValue((preState) => {
         if (deep)
-          return { ...preState, [key]: { ...preState[key], [deep]: value } };
+          return { ...preState, [name]: { ...preState[name], [deep]: value } };
 
-        return { ...preState, [key]: value };
+        return { ...preState, [name]: value };
       });
     },
     (value) => {
       if (value) setValue((prevState) => ({ ...prevState, ...value }));
     },
     (initWith = {}) => {
-      setValue({ ...initState, ...initWith });
+      if (typeof initState === "function") {
+        // @ts-ignore
+        setValue({ ...initState(), ...initWith });
+      } else {
+        setValue({ ...initState, ...initWith });
+      }
     },
     // components
     useMemo(
       () => ({
-        Input: ({ deep, modifier, ...props }) =>
-          React.createElement("input", {
+        Input: ({ deep, modifier, ...props }) => {
+          if (modifier) {
+            const key = props.name + "" + deep;
+            modifierStore[key] = modifier;
+          }
+
+          return React.createElement("input", {
             ...props,
-            ["data-modifier"]: modifier,
+            // this is hack just to pass function or anything in native input!!
+            ["data-modifier"]: !!modifier,
             ["data-deep"]: deep,
-          }) as any,
+          }) as any
+        },
         TextArea: ({ deep, ...props }) =>
           React.createElement("textarea", {
             ...props,
@@ -153,13 +171,15 @@ export function useFormrop<S>(
               React.createElement("input", {
                 ...props,
                 ["data-deep"]: deep,
-                id: props.name,
+                id: props.name + "" + deep,
                 type: "checkbox",
                 checked: value,
+                key: props.name + "" + deep + "input"
               }),
               React.createElement("label", {
-                htmlFor: props.name,
+                htmlFor: props.name + "" + deep,
                 children: label,
+                key: props.name + "" + deep + "label"
               }),
             ],
           }) as any,
@@ -336,7 +356,6 @@ export function useFormropArrays<S>(
         Input: ({ index, deep, modifier, ...props }) =>
           React.createElement("input", {
             ...props,
-            ["data-modifier"]: modifier,
             ["data-index"]: index,
             ["data-deep"]: deep,
           }) as any,

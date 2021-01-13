@@ -1,12 +1,13 @@
 import React, { ChangeEvent } from "react";
-export declare function useFormrop<S>(initState: S): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
-    Input: <N extends keyof S>(props: {
-        type: "url" | "text";
+declare type Modifier<V> = (value: V) => V;
+export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
+    Input: <N extends keyof S, V>(props: {
+        type: "url" | "text" | "number";
         name: N;
         deep?: keyof S[N];
-        value: string;
+        value: V;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-        modifier?: "toLowerCase" | "toUpperCase";
+        modifier?: Modifier<V>;
         disabled?: boolean | undefined;
         className?: string;
         id?: string;
@@ -129,4 +130,5 @@ export declare function useFormropArrays<S>(initState: S[]): [S[], (event: Chang
         style?: React.CSSProperties;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 }];
+export {};
 //# sourceMappingURL=index.d.ts.map
