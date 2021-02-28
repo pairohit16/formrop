@@ -32,7 +32,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useFormropArrays = exports.useFormrop = void 0;
 const react_1 = __importStar(require("react"));
-const modifierStore = {};
+const formRopStore = {};
 function useFormrop(initState) {
     /** Html Inputs design */
     const [value, setValue] = react_1.useState(initState);
@@ -42,8 +42,6 @@ function useFormrop(initState) {
             const type = target.type;
             const name = target.name;
             const deep = target.dataset.deep;
-            const isModifier = target.dataset.modifier === "true";
-            const key = name + "" + deep;
             let value = target.value || "";
             switch (type) {
                 case "number":
@@ -56,11 +54,21 @@ function useFormrop(initState) {
                     // @ts-ignore
                     value = target.checked;
                     break;
+                case "date":
+                    // @ts-ignore
+                    value = target.valueAsDate;
             }
             // check for modifier
-            if (isModifier) {
-                const modifier = modifierStore[key];
+            if (target.dataset.modifier === "true") {
+                const key = name + "" + deep;
+                const modifier = formRopStore[key];
                 value = modifier(value);
+            }
+            // for date modifier
+            if (target.type === "date") {
+                const key = name + "" + deep;
+                const fromDate = formRopStore[key];
+                value = fromDate(value);
             }
             setValue((preState) => {
                 if (deep)
@@ -87,11 +95,17 @@ function useFormrop(initState) {
                 var { deep, modifier } = _a, props = __rest(_a, ["deep", "modifier"]);
                 if (modifier) {
                     const key = props.name + "" + deep;
-                    modifierStore[key] = modifier;
+                    formRopStore[key] = modifier;
                 }
                 return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { 
                     // this is hack just to pass function or anything in native input!!
                     ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
+            },
+            Date: (_a) => {
+                var { deep, value, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "fromDate", "toDate"]);
+                const key = props.name + "" + deep;
+                formRopStore[key] = fromDate;
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { value: toDate(value), ["data-deep"]: deep, type: "date" }));
             },
             TextArea: (_a) => {
                 var { deep } = _a, props = __rest(_a, ["deep"]);
@@ -105,7 +119,7 @@ function useFormrop(initState) {
                         react_1.default.createElement("label", {
                             htmlFor: props.name + "" + deep,
                             children: label,
-                            key: props.name + "" + deep + "label"
+                            key: props.name + "" + deep + "label",
                         }),
                     ],
                 });

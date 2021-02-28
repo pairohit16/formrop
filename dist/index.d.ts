@@ -1,5 +1,7 @@
 import React, { ChangeEvent } from "react";
 declare type Modifier<V> = (value: V) => V;
+declare type FromDate<V> = (value: Date) => V;
+declare type ToDate<V> = (value: V) => string;
 export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
     Input: <N extends keyof S, V>(props: {
         type: "url" | "text" | "number";
@@ -14,6 +16,20 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
         style?: React.CSSProperties;
         autoFocus?: boolean;
         placeholder?: string;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    Date: <N extends keyof S, V>(props: {
+        name: N;
+        deep?: keyof S[N];
+        value: V;
+        toDate: ToDate<V>;
+        fromDate: FromDate<V>;
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        disabled?: boolean | undefined;
+        readOnly?: boolean | undefined;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+        autoFocus?: boolean;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     TextArea: <N extends keyof S>(props: {
         name: N;
