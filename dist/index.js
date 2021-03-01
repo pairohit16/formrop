@@ -45,10 +45,12 @@ function useFormrop(initState) {
             let value = target.value || "";
             switch (type) {
                 case "number":
-                    value = parseInt(value) || "";
+                    value = parseInt(value) || ((target.value = ""), undefined);
                     break;
                 case "url":
-                    value = value.startsWith("http") ? value : "";
+                    value = value.startsWith("http")
+                        ? value
+                        : ((target.value = ""), undefined);
                     break;
                 case "checkbox":
                     // @ts-ignore
@@ -57,6 +59,11 @@ function useFormrop(initState) {
                 case "date":
                     // @ts-ignore
                     value = target.valueAsDate;
+                    break;
+                case "datetime-local":
+                    // @ts-ignore
+                    value = target.valueAsNumber;
+                    break;
             }
             // check for modifier
             if (target.dataset.modifier === "true") {
@@ -66,6 +73,11 @@ function useFormrop(initState) {
             }
             // for date modifier
             if (target.type === "date") {
+                const key = name + "" + deep;
+                const fromDate = formRopStore[key];
+                value = fromDate(value);
+            }
+            if (target.type === "datetime-local") {
                 const key = name + "" + deep;
                 const fromDate = formRopStore[key];
                 value = fromDate(value);
@@ -92,12 +104,16 @@ function useFormrop(initState) {
         // components
         react_1.useMemo(() => ({
             Input: (_a) => {
-                var { deep, modifier } = _a, props = __rest(_a, ["deep", "modifier"]);
+                var { deep, modifier, placeholder, type } = _a, props = __rest(_a, ["deep", "modifier", "placeholder", "type"]);
                 if (modifier) {
                     const key = props.name + "" + deep;
                     formRopStore[key] = modifier;
                 }
-                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { 
+                if (type === "url" && !placeholder) {
+                    placeholder = "https://";
+                }
+                return react_1.default.createElement("input", Object.assign(Object.assign({ type,
+                    placeholder }, props), { 
                     // this is hack just to pass function or anything in native input!!
                     ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
@@ -105,7 +121,13 @@ function useFormrop(initState) {
                 var { deep, value, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "fromDate", "toDate"]);
                 const key = props.name + "" + deep;
                 formRopStore[key] = fromDate;
-                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { value: toDate(value), ["data-deep"]: deep, type: "date" }));
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "date", value: toDate(value), ["data-deep"]: deep }));
+            },
+            DateTime: (_a) => {
+                var { deep, value, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "fromDate", "toDate"]);
+                const key = props.name + "" + deep;
+                formRopStore[key] = fromDate;
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "datetime-local", value: toDate(value), ["data-deep"]: deep }));
             },
             TextArea: (_a) => {
                 var { deep } = _a, props = __rest(_a, ["deep"]);
@@ -151,20 +173,42 @@ function useFormropArrays(initState) {
             let value = target.value || "";
             switch (type) {
                 case "number":
-                    value = parseInt(value) || "";
+                    value = parseInt(value) || ((target.value = ""), undefined);
                     break;
                 case "url":
-                    value = value.startsWith("http") ? value : "";
+                    value = value.startsWith("http")
+                        ? value
+                        : ((target.value = ""), undefined);
                     break;
                 case "checkbox":
                     // @ts-ignore, checked is only avail for checkbox input, typescript is not working properly
                     value = target.checked;
                     break;
+                case "date":
+                    // @ts-ignore
+                    value = target.valueAsDate;
+                    break;
+                case "datetime-local":
+                    // @ts-ignore
+                    value = target.valueAsNumber;
             }
             // check for modifier
-            const modifier = target.dataset.modifier;
-            if (modifier && typeof value === "string")
-                value = value[modifier]();
+            if (target.dataset.modifier === "true") {
+                const key = name + "" + deep;
+                const modifier = formRopStore[key];
+                value = modifier(value);
+            }
+            // for date modifier
+            if (target.type === "date" || target.type === "datetime-local") {
+                const key = name + "" + deep;
+                const fromDate = formRopStore[key];
+                value = fromDate(value);
+            }
+            if (target.type === "datetime-local") {
+                const key = name + "" + deep;
+                const fromDate = formRopStore[key];
+                value = fromDate(value);
+            }
             setValue((preState) => {
                 const copy = Array.from(preState);
                 if (deep) {
@@ -179,14 +223,36 @@ function useFormropArrays(initState) {
             if (Array.isArray(value))
                 setValue(value);
         },
-        () => {
-            setValue(initState);
+        (initWith) => {
+            setValue(initWith || []);
         },
         // components
         react_1.useMemo(() => ({
             Input: (_a) => {
-                var { index, deep, modifier } = _a, props = __rest(_a, ["index", "deep", "modifier"]);
-                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { ["data-index"]: index, ["data-deep"]: deep }));
+                var { deep, index, modifier, placeholder, type } = _a, props = __rest(_a, ["deep", "index", "modifier", "placeholder", "type"]);
+                if (modifier) {
+                    const key = props.name + "" + deep;
+                    formRopStore[key] = modifier;
+                }
+                if (type === "url" && !placeholder) {
+                    placeholder = "https://";
+                }
+                return react_1.default.createElement("input", Object.assign(Object.assign({ type,
+                    placeholder }, props), { 
+                    // this is hack just to pass function or anything in native input!!
+                    ["data-index"]: index, ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
+            },
+            Date: (_a) => {
+                var { deep, value, index, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "index", "fromDate", "toDate"]);
+                const key = props.name + "" + deep;
+                formRopStore[key] = fromDate;
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "datetime", value: toDate(value), ["data-index"]: index, ["data-deep"]: deep }));
+            },
+            DateTime: (_a) => {
+                var { deep, value, index, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "index", "fromDate", "toDate"]);
+                const key = props.name + "" + deep;
+                formRopStore[key] = fromDate;
+                return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "datetime-local", value: toDate(value), ["data-index"]: index, ["data-deep"]: deep }));
             },
             TextArea: (_a) => {
                 var { index, deep } = _a, props = __rest(_a, ["index", "deep"]);

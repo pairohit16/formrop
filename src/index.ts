@@ -1,8 +1,10 @@
-import React, { useState, ChangeEvent, useMemo } from "react";
+import React, { ChangeEvent, useMemo, useState } from "react";
 
 const formRopStore = {};
+
 type Modifier<V> = (value: V) => V;
 type FromDate<V> = (value: Date) => V;
+type FromDateTime<V> = (value: number) => V;
 type ToDate<V> = (value: V) => string;
 export function useFormrop<S>(
   initState: S | (() => S)
@@ -39,6 +41,23 @@ export function useFormrop<S>(
       value: V;
       toDate: ToDate<V>;
       fromDate: FromDate<V>;
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+      disabled?: boolean | undefined;
+      readOnly?: boolean | undefined;
+      className?: string;
+      id?: string;
+      style?: React.CSSProperties;
+      autoFocus?: boolean;
+    }) => React.DetailedReactHTMLElement<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >;
+    DateTime: <N extends keyof S, V>(props: {
+      name: N;
+      deep?: keyof S[N];
+      value: V;
+      toDate: ToDate<V>;
+      fromDate: FromDateTime<V>;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       disabled?: boolean | undefined;
       readOnly?: boolean | undefined;
@@ -125,13 +144,14 @@ export function useFormrop<S>(
       const deep = target.dataset.deep;
 
       let value: string | number | boolean | Date = target.value || "";
-
       switch (type) {
         case "number":
-          value = parseInt(value) || "";
+          value = parseInt(value) || ((target.value = ""), undefined as any);
           break;
         case "url":
-          value = value.startsWith("http") ? value : "";
+          value = value.startsWith("http")
+            ? value
+            : ((target.value = ""), undefined as any);
           break;
         case "checkbox":
           // @ts-ignore
@@ -140,6 +160,11 @@ export function useFormrop<S>(
         case "date":
           // @ts-ignore
           value = target.valueAsDate;
+          break;
+        case "datetime-local":
+          // @ts-ignore
+          value = target.valueAsNumber;
+          break;
       }
 
       // check for modifier
@@ -154,6 +179,12 @@ export function useFormrop<S>(
         const key = name + "" + deep;
         const fromDate = formRopStore[key] as FromDate<Date>;
         value = fromDate(value as Date);
+      }
+
+      if (target.type === "datetime-local") {
+        const key = name + "" + deep;
+        const fromDate = formRopStore[key] as any;
+        value = fromDate(value as number);
       }
 
       setValue((preState) => {
@@ -177,13 +208,19 @@ export function useFormrop<S>(
     // components
     useMemo(
       () => ({
-        Input: ({ deep, modifier, ...props }) => {
+        Input: ({ deep, modifier, placeholder, type, ...props }) => {
           if (modifier) {
             const key = props.name + "" + deep;
             formRopStore[key] = modifier;
           }
 
+          if (type === "url" && !placeholder) {
+            placeholder = "https://";
+          }
+
           return React.createElement("input", {
+            type,
+            placeholder,
             ...props,
             // this is hack just to pass function or anything in native input!!
             ["data-modifier"]: !!modifier,
@@ -195,9 +232,19 @@ export function useFormrop<S>(
           formRopStore[key] = fromDate;
           return React.createElement("input", {
             ...props,
+            type: "date",
             value: toDate(value),
             ["data-deep"]: deep,
-            type: "date",
+          }) as any;
+        },
+        DateTime: ({ deep, value, fromDate, toDate, ...props }) => {
+          const key = props.name + "" + deep;
+          formRopStore[key] = fromDate;
+          return React.createElement("input", {
+            ...props,
+            type: "datetime-local",
+            value: toDate(value),
+            ["data-deep"]: deep,
           }) as any;
         },
         TextArea: ({ deep, ...props }) =>
@@ -262,20 +309,56 @@ export function useFormropArrays<S>(
   (value: S[]) => void,
   (initWith?: S[]) => void,
   {
-    Input: (props: {
-      type: "url" | "text";
+    Input: <V>(props: {
+      type: "url" | "text" | "number";
+      value: V;
+      modifier?: Modifier<V>;
       name: string;
       deep?: string;
       index: number;
-      value: string;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-      modifier?: "toLowerCase" | "toUpperCase";
       disabled?: boolean | undefined;
       className?: string;
       id?: string;
       style?: React.CSSProperties;
       autoFocus?: boolean;
       placeholder?: string;
+    }) => React.DetailedReactHTMLElement<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >;
+    Date: <V>(props: {
+      name: string;
+      deep?: string;
+      value: V;
+      index: number;
+      toDate: ToDate<V>;
+      fromDate: FromDate<V>;
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+      disabled?: boolean | undefined;
+      readOnly?: boolean | undefined;
+      className?: string;
+      id?: string;
+      style?: React.CSSProperties;
+      autoFocus?: boolean;
+    }) => React.DetailedReactHTMLElement<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >;
+    DateTime: <V>(props: {
+      name: string;
+      deep?: string;
+      value: V;
+      index: number;
+      toDate: ToDate<V>;
+      fromDate: FromDate<V>;
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+      disabled?: boolean | undefined;
+      readOnly?: boolean | undefined;
+      className?: string;
+      id?: string;
+      style?: React.CSSProperties;
+      autoFocus?: boolean;
     }) => React.DetailedReactHTMLElement<
       React.InputHTMLAttributes<HTMLInputElement>,
       HTMLInputElement
@@ -358,22 +441,47 @@ export function useFormropArrays<S>(
       const deep = target.dataset.deep;
       const index = Number(target.dataset.index);
 
-      let value: string | number | boolean = target.value || "";
+      let value: string | number | boolean | Date = target.value || "";
       switch (type) {
         case "number":
-          value = parseInt(value) || "";
+          value = parseInt(value) || ((target.value = ""), undefined as any);
           break;
         case "url":
-          value = value.startsWith("http") ? value : "";
+          value = value.startsWith("http")
+            ? value
+            : ((target.value = ""), undefined as any);
           break;
         case "checkbox":
           // @ts-ignore, checked is only avail for checkbox input, typescript is not working properly
           value = target.checked;
           break;
+        case "date":
+          // @ts-ignore
+          value = target.valueAsDate;
+          break;
+        case "datetime-local":
+          // @ts-ignore
+          value = target.valueAsNumber;
       }
+
       // check for modifier
-      const modifier = target.dataset.modifier;
-      if (modifier && typeof value === "string") value = value[modifier]();
+      if (target.dataset.modifier === "true") {
+        const key = name + "" + deep;
+        const modifier = formRopStore[key] as Modifier<typeof value>;
+        value = modifier(value);
+      }
+
+      // for date modifier
+      if (target.type === "date" || target.type === "datetime-local") {
+        const key = name + "" + deep;
+        const fromDate = formRopStore[key] as FromDate<Date>;
+        value = fromDate(value as Date);
+      }
+      if (target.type === "datetime-local") {
+        const key = name + "" + deep;
+        const fromDate = formRopStore[key] as FromDateTime<number>;
+        value = fromDate(value as number);
+      }
 
       setValue((preState) => {
         const copy = Array.from(preState);
@@ -387,18 +495,56 @@ export function useFormropArrays<S>(
     (value) => {
       if (Array.isArray(value)) setValue(value);
     },
-    () => {
-      setValue(initState);
+    (initWith) => {
+      setValue(initWith || []);
     },
     // components
     useMemo(
       () => ({
-        Input: ({ index, deep, modifier, ...props }) =>
-          React.createElement("input", {
+        Input: ({ deep, index, modifier, placeholder, type, ...props }) => {
+          if (modifier) {
+            const key = props.name + "" + deep;
+            formRopStore[key] = modifier;
+          }
+
+          if (type === "url" && !placeholder) {
+            placeholder = "https://";
+          }
+
+          return React.createElement("input", {
+            type,
+            placeholder,
             ...props,
+            // this is hack just to pass function or anything in native input!!
+            ["data-index"]: index,
+            ["data-modifier"]: !!modifier,
+            ["data-deep"]: deep,
+          }) as any;
+        },
+        Date: ({ deep, value, index, fromDate, toDate, ...props }) => {
+          const key = props.name + "" + deep;
+          formRopStore[key] = fromDate;
+
+          return React.createElement("input", {
+            ...props,
+            type: "datetime",
+            value: toDate(value),
             ["data-index"]: index,
             ["data-deep"]: deep,
-          }) as any,
+          }) as any;
+        },
+        DateTime: ({ deep, value, index, fromDate, toDate, ...props }) => {
+          const key = props.name + "" + deep;
+          formRopStore[key] = fromDate;
+
+          return React.createElement("input", {
+            ...props,
+            type: "datetime-local",
+            value: toDate(value),
+            ["data-index"]: index,
+            ["data-deep"]: deep,
+          }) as any;
+        },
         TextArea: ({ index, deep, ...props }) =>
           React.createElement("textarea", {
             ...props,

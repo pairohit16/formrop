@@ -1,6 +1,7 @@
 import React, { ChangeEvent } from "react";
 declare type Modifier<V> = (value: V) => V;
 declare type FromDate<V> = (value: Date) => V;
+declare type FromDateTime<V> = (value: number) => V;
 declare type ToDate<V> = (value: V) => string;
 export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
     Input: <N extends keyof S, V>(props: {
@@ -23,6 +24,20 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
         value: V;
         toDate: ToDate<V>;
         fromDate: FromDate<V>;
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        disabled?: boolean | undefined;
+        readOnly?: boolean | undefined;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+        autoFocus?: boolean;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    DateTime: <N extends keyof S, V>(props: {
+        name: N;
+        deep?: keyof S[N];
+        value: V;
+        toDate: ToDate<V>;
+        fromDate: FromDateTime<V>;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         disabled?: boolean | undefined;
         readOnly?: boolean | undefined;
@@ -80,20 +95,50 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
 }];
 export declare function useFormropArrays<S>(initState: S[]): [S[], (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (value: S[]) => void, (initWith?: S[]) => void, {
-    Input: (props: {
-        type: "url" | "text";
+    Input: <V>(props: {
+        type: "url" | "text" | "number";
+        value: V;
+        modifier?: Modifier<V>;
         name: string;
         deep?: string;
         index: number;
-        value: string;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-        modifier?: "toLowerCase" | "toUpperCase";
         disabled?: boolean | undefined;
         className?: string;
         id?: string;
         style?: React.CSSProperties;
         autoFocus?: boolean;
         placeholder?: string;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    Date: <V>(props: {
+        name: string;
+        deep?: string;
+        value: V;
+        index: number;
+        toDate: ToDate<V>;
+        fromDate: FromDate<V>;
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        disabled?: boolean | undefined;
+        readOnly?: boolean | undefined;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+        autoFocus?: boolean;
+    }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+    DateTime: <V>(props: {
+        name: string;
+        deep?: string;
+        value: V;
+        index: number;
+        toDate: ToDate<V>;
+        fromDate: FromDate<V>;
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+        disabled?: boolean | undefined;
+        readOnly?: boolean | undefined;
+        className?: string;
+        id?: string;
+        style?: React.CSSProperties;
+        autoFocus?: boolean;
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     TextArea: (props: {
         name: string;
