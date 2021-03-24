@@ -45,12 +45,12 @@ function useFormrop(initState) {
             let value = target.value || "";
             switch (type) {
                 case "number":
-                    value = parseInt(value) || ((target.value = ""), undefined);
+                    value = parseInt(value) || ((target.value = ""), null);
                     break;
                 case "url":
                     value = value.startsWith("http")
                         ? value
-                        : ((target.value = ""), undefined);
+                        : ((target.value = ""), null);
                     break;
                 case "checkbox":
                     // @ts-ignore
@@ -113,7 +113,7 @@ function useFormrop(initState) {
                     placeholder = "https://";
                 }
                 return react_1.default.createElement("input", Object.assign(Object.assign({ type,
-                    placeholder }, props), { 
+                    placeholder }, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", 
                     // this is hack just to pass function or anything in native input!!
                     ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
@@ -131,7 +131,7 @@ function useFormrop(initState) {
             },
             TextArea: (_a) => {
                 var { deep } = _a, props = __rest(_a, ["deep"]);
-                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { ["data-deep"]: deep }));
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", ["data-deep"]: deep }));
             },
             CheckBox: (_a) => {
                 var { deep, value, label } = _a, props = __rest(_a, ["deep", "value", "label"]);
@@ -173,12 +173,12 @@ function useFormropArrays(initState) {
             let value = target.value || "";
             switch (type) {
                 case "number":
-                    value = parseInt(value) || ((target.value = ""), undefined);
+                    value = parseInt(value) || ((target.value = ""), null);
                     break;
                 case "url":
                     value = value.startsWith("http")
                         ? value
-                        : ((target.value = ""), undefined);
+                        : ((target.value = ""), null);
                     break;
                 case "checkbox":
                     // @ts-ignore, checked is only avail for checkbox input, typescript is not working properly
@@ -238,7 +238,7 @@ function useFormropArrays(initState) {
                     placeholder = "https://";
                 }
                 return react_1.default.createElement("input", Object.assign(Object.assign({ type,
-                    placeholder }, props), { 
+                    placeholder }, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", 
                     // this is hack just to pass function or anything in native input!!
                     ["data-index"]: index, ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
@@ -256,7 +256,7 @@ function useFormropArrays(initState) {
             },
             TextArea: (_a) => {
                 var { index, deep } = _a, props = __rest(_a, ["index", "deep"]);
-                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { ["data-index"]: index, ["data-deep"]: deep }));
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", ["data-index"]: index, ["data-deep"]: deep }));
             },
             CheckBox: (_a) => {
                 var { index, deep, value, label } = _a, props = __rest(_a, ["index", "deep", "value", "label"]);

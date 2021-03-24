@@ -146,12 +146,12 @@ export function useFormrop<S>(
       let value: string | number | boolean | Date = target.value || "";
       switch (type) {
         case "number":
-          value = parseInt(value) || ((target.value = ""), undefined as any);
+          value = parseInt(value) || ((target.value = ""), null as any);
           break;
         case "url":
           value = value.startsWith("http")
             ? value
-            : ((target.value = ""), undefined as any);
+            : ((target.value = ""), null as any);
           break;
         case "checkbox":
           // @ts-ignore
@@ -222,6 +222,10 @@ export function useFormrop<S>(
             type,
             placeholder,
             ...props,
+            autoComplete: "off",
+            autoCorrect: "off",
+            autocapitalize: "off",
+            spellcheck: "false",
             // this is hack just to pass function or anything in native input!!
             ["data-modifier"]: !!modifier,
             ["data-deep"]: deep,
@@ -250,6 +254,10 @@ export function useFormrop<S>(
         TextArea: ({ deep, ...props }) =>
           React.createElement("textarea", {
             ...props,
+            autoComplete: "off",
+            autoCorrect: "off",
+            autocapitalize: "off",
+            spellcheck: "false",
             ["data-deep"]: deep,
           }) as any,
         CheckBox: ({ deep, value, label, ...props }) =>
@@ -444,12 +452,12 @@ export function useFormropArrays<S>(
       let value: string | number | boolean | Date = target.value || "";
       switch (type) {
         case "number":
-          value = parseInt(value) || ((target.value = ""), undefined as any);
+          value = parseInt(value) || ((target.value = ""), null as any);
           break;
         case "url":
           value = value.startsWith("http")
             ? value
-            : ((target.value = ""), undefined as any);
+            : ((target.value = ""), null as any);
           break;
         case "checkbox":
           // @ts-ignore, checked is only avail for checkbox input, typescript is not working properly
@@ -515,6 +523,10 @@ export function useFormropArrays<S>(
             type,
             placeholder,
             ...props,
+            autoComplete: "off",
+            autoCorrect: "off",
+            autocapitalize: "off",
+            spellcheck: "false",
             // this is hack just to pass function or anything in native input!!
             ["data-index"]: index,
             ["data-modifier"]: !!modifier,
@@ -548,6 +560,10 @@ export function useFormropArrays<S>(
         TextArea: ({ index, deep, ...props }) =>
           React.createElement("textarea", {
             ...props,
+            autoComplete: "off",
+            autoCorrect: "off",
+            autocapitalize: "off",
+            spellcheck: "false",
             ["data-index"]: index,
             ["data-deep"]: deep,
           }) as any,
