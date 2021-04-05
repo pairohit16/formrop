@@ -16,7 +16,7 @@ export function useFormrop<S>(
     >
   ) => void,
   (key: Partial<S>) => void,
-  (initWith?: Partial<S>) => void,
+  (initWith?: Partial<S> | (() => Partial<S>)) => void,
   {
     Input: <N extends keyof S, V>(props: {
       type: "url" | "text" | "number";
@@ -198,7 +198,10 @@ export function useFormrop<S>(
       if (value) setValue((prevState) => ({ ...prevState, ...value }));
     },
     (initWith = {}) => {
-      if (typeof initState === "function") {
+      if (typeof initWith === "function") {
+        // @ts-ignore
+        setValue({ ...initWith() });
+      } else if (typeof initState === "function") {
         // @ts-ignore
         setValue({ ...initState(), ...initWith });
       } else {
@@ -224,8 +227,8 @@ export function useFormrop<S>(
             ...props,
             autoComplete: "off",
             autoCorrect: "off",
-            autocapitalize: "off",
-            spellcheck: "false",
+            autoCapitalize: "off",
+            spellCheck: "false",
             // this is hack just to pass function or anything in native input!!
             ["data-modifier"]: !!modifier,
             ["data-deep"]: deep,
@@ -256,8 +259,8 @@ export function useFormrop<S>(
             ...props,
             autoComplete: "off",
             autoCorrect: "off",
-            autocapitalize: "off",
-            spellcheck: "false",
+            autoCapitalize: "off",
+            spellCheck: "false",
             ["data-deep"]: deep,
           }) as any,
         CheckBox: ({ deep, value, label, ...props }) =>
@@ -525,8 +528,8 @@ export function useFormropArrays<S>(
             ...props,
             autoComplete: "off",
             autoCorrect: "off",
-            autocapitalize: "off",
-            spellcheck: "false",
+            autoCapitalize: "off",
+            spellCheck: "false",
             // this is hack just to pass function or anything in native input!!
             ["data-index"]: index,
             ["data-modifier"]: !!modifier,
@@ -562,8 +565,8 @@ export function useFormropArrays<S>(
             ...props,
             autoComplete: "off",
             autoCorrect: "off",
-            autocapitalize: "off",
-            spellcheck: "false",
+            autoCapitalize: "off",
+            spellCheck: "false",
             ["data-index"]: index,
             ["data-deep"]: deep,
           }) as any,

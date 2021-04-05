@@ -3,7 +3,7 @@ declare type Modifier<V> = (value: V) => V;
 declare type FromDate<V> = (value: Date) => V;
 declare type FromDateTime<V> = (value: number) => V;
 declare type ToDate<V> = (value: V) => string;
-export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>) => void, {
+export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S> | (() => Partial<S>)) => void, {
     Input: <N extends keyof S, V>(props: {
         type: "url" | "text" | "number";
         name: N;

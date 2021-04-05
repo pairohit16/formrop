@@ -93,7 +93,11 @@ function useFormrop(initState) {
                 setValue((prevState) => (Object.assign(Object.assign({}, prevState), value)));
         },
         (initWith = {}) => {
-            if (typeof initState === "function") {
+            if (typeof initWith === "function") {
+                // @ts-ignore
+                setValue(Object.assign({}, initWith()));
+            }
+            else if (typeof initState === "function") {
                 // @ts-ignore
                 setValue(Object.assign(Object.assign({}, initState()), initWith));
             }
@@ -113,7 +117,7 @@ function useFormrop(initState) {
                     placeholder = "https://";
                 }
                 return react_1.default.createElement("input", Object.assign(Object.assign({ type,
-                    placeholder }, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", 
+                    placeholder }, props), { autoComplete: "off", autoCorrect: "off", autoCapitalize: "off", spellCheck: "false", 
                     // this is hack just to pass function or anything in native input!!
                     ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
@@ -131,7 +135,7 @@ function useFormrop(initState) {
             },
             TextArea: (_a) => {
                 var { deep } = _a, props = __rest(_a, ["deep"]);
-                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", ["data-deep"]: deep }));
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { autoComplete: "off", autoCorrect: "off", autoCapitalize: "off", spellCheck: "false", ["data-deep"]: deep }));
             },
             CheckBox: (_a) => {
                 var { deep, value, label } = _a, props = __rest(_a, ["deep", "value", "label"]);
@@ -238,7 +242,7 @@ function useFormropArrays(initState) {
                     placeholder = "https://";
                 }
                 return react_1.default.createElement("input", Object.assign(Object.assign({ type,
-                    placeholder }, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", 
+                    placeholder }, props), { autoComplete: "off", autoCorrect: "off", autoCapitalize: "off", spellCheck: "false", 
                     // this is hack just to pass function or anything in native input!!
                     ["data-index"]: index, ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
@@ -256,7 +260,7 @@ function useFormropArrays(initState) {
             },
             TextArea: (_a) => {
                 var { index, deep } = _a, props = __rest(_a, ["index", "deep"]);
-                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { autoComplete: "off", autoCorrect: "off", autocapitalize: "off", spellcheck: "false", ["data-index"]: index, ["data-deep"]: deep }));
+                return react_1.default.createElement("textarea", Object.assign(Object.assign({}, props), { autoComplete: "off", autoCorrect: "off", autoCapitalize: "off", spellCheck: "false", ["data-index"]: index, ["data-deep"]: deep }));
             },
             CheckBox: (_a) => {
                 var { index, deep, value, label } = _a, props = __rest(_a, ["index", "deep", "value", "label"]);
