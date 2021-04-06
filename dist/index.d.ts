@@ -3,7 +3,7 @@ declare type Modifier<V> = (value: V) => V;
 declare type FromDate<V> = (value: Date) => V;
 declare type FromDateTime<V> = (value: number) => V;
 declare type ToDate<V> = (value: V) => string;
-export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S> | (() => Partial<S>)) => void, {
+export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>, merge?: boolean) => void, {
     Input: <N extends keyof S, V>(props: {
         type: "url" | "text" | "number";
         name: N;
@@ -87,6 +87,7 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
         style?: React.CSSProperties;
     }) => React.DetailedReactHTMLElement<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
     Submit: (props: {
+        onSumit: Function;
         disabled?: boolean;
         children?: string;
         className?: string;
@@ -184,6 +185,7 @@ export declare function useFormropArrays<S>(initState: S[]): [S[], (event: Chang
         style?: React.CSSProperties;
     }) => React.DetailedReactHTMLElement<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
     Submit: (props: {
+        onSubmit: Function;
         disabled?: boolean;
         children?: string;
         className?: string;

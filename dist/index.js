@@ -92,17 +92,19 @@ function useFormrop(initState) {
             if (value)
                 setValue((prevState) => (Object.assign(Object.assign({}, prevState), value)));
         },
-        (initWith = {}) => {
-            if (typeof initWith === "function") {
+        (initWith = {}, merge) => {
+            if (!merge) {
                 // @ts-ignore
-                setValue(Object.assign({}, initWith()));
-            }
-            else if (typeof initState === "function") {
-                // @ts-ignore
-                setValue(Object.assign(Object.assign({}, initState()), initWith));
+                setValue(initWith);
             }
             else {
-                setValue(Object.assign(Object.assign({}, initState), initWith));
+                if (typeof initState === "function") {
+                    // @ts-ignore
+                    setValue(Object.assign(Object.assign({}, initState()), initWith));
+                }
+                else {
+                    setValue(Object.assign(Object.assign({}, initState), initWith));
+                }
             }
         },
         // components
@@ -159,7 +161,10 @@ function useFormrop(initState) {
                     }, label);
                 }));
             },
-            Submit: (props) => react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "submit" })),
+            Submit: (_a) => {
+                var { onSumit } = _a, props = __rest(_a, ["onSumit"]);
+                return react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "button", onClick: () => onSumit() }));
+            },
         }), []),
     ];
 }
@@ -283,7 +288,10 @@ function useFormropArrays(initState) {
                     }, label);
                 }));
             },
-            Submit: (props) => react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "submit" })),
+            Submit: (_a) => {
+                var { onSubmit } = _a, props = __rest(_a, ["onSubmit"]);
+                return react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "button", onClick: () => onSubmit() }));
+            },
         }), []),
     ];
 }

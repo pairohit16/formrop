@@ -16,7 +16,7 @@ export function useFormrop<S>(
     >
   ) => void,
   (key: Partial<S>) => void,
-  (initWith?: Partial<S> | (() => Partial<S>)) => void,
+  (initWith?: Partial<S>, merge?: boolean) => void,
   {
     Input: <N extends keyof S, V>(props: {
       type: "url" | "text" | "number";
@@ -119,6 +119,7 @@ export function useFormrop<S>(
       HTMLSelectElement
     >;
     Submit: (props: {
+      onSumit: Function;
       disabled?: boolean;
       children?: string;
       className?: string;
@@ -197,15 +198,17 @@ export function useFormrop<S>(
     (value) => {
       if (value) setValue((prevState) => ({ ...prevState, ...value }));
     },
-    (initWith = {}) => {
-      if (typeof initWith === "function") {
+    (initWith = {}, merge) => {
+      if (!merge) {
         // @ts-ignore
-        setValue({ ...initWith() });
-      } else if (typeof initState === "function") {
-        // @ts-ignore
-        setValue({ ...initState(), ...initWith });
+        setValue(initWith);
       } else {
-        setValue({ ...initState, ...initWith });
+        if (typeof initState === "function") {
+          // @ts-ignore
+          setValue({ ...initState(), ...initWith });
+        } else {
+          setValue({ ...initState, ...initWith });
+        }
       }
     },
     // components
@@ -300,8 +303,12 @@ export function useFormrop<S>(
             })
           ) as any;
         },
-        Submit: (props) =>
-          React.createElement("button", { ...props, type: "submit" }),
+        Submit: ({ onSumit, ...props }) =>
+          React.createElement("button", {
+            ...props,
+            type: "button",
+            onClick: () => onSumit(),
+          }),
       }),
       []
     ),
@@ -427,6 +434,7 @@ export function useFormropArrays<S>(
       HTMLSelectElement
     >;
     Submit: (props: {
+      onSubmit: Function;
       disabled?: boolean;
       children?: string;
       className?: string;
@@ -607,8 +615,12 @@ export function useFormropArrays<S>(
             })
           ) as any;
         },
-        Submit: (props) =>
-          React.createElement("button", { ...props, type: "submit" }),
+        Submit: ({ onSubmit, ...props }) =>
+          React.createElement("button", {
+            ...props,
+            type: "button",
+            onClick: () => onSubmit(),
+          }),
       }),
       []
     ),
