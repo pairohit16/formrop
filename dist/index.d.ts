@@ -87,7 +87,7 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
         style?: React.CSSProperties;
     }) => React.DetailedReactHTMLElement<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement>;
     Submit: (props: {
-        onSumit: Function;
+        onSubmit: Function;
         disabled?: boolean;
         children?: string;
         className?: string;

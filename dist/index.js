@@ -44,6 +44,10 @@ function useFormrop(initState) {
             const deep = target.dataset.deep;
             let value = target.value || "";
             switch (type) {
+                case "text":
+                case "textarea":
+                    value = value.length > 0 ? value : ((target.value = ""), null);
+                    break;
                 case "number":
                     value = parseInt(value) || ((target.value = ""), null);
                     break;
@@ -162,8 +166,8 @@ function useFormrop(initState) {
                 }));
             },
             Submit: (_a) => {
-                var { onSumit } = _a, props = __rest(_a, ["onSumit"]);
-                return react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "button", onClick: () => onSumit() }));
+                var { onSubmit } = _a, props = __rest(_a, ["onSubmit"]);
+                return react_1.default.createElement("button", Object.assign(Object.assign({}, props), { type: "button", onClick: () => onSubmit() }));
             },
         }), []),
     ];
@@ -181,6 +185,10 @@ function useFormropArrays(initState) {
             const index = Number(target.dataset.index);
             let value = target.value || "";
             switch (type) {
+                case "text":
+                case "textarea":
+                    value = value.length > 0 ? value : ((target.value = ""), null);
+                    break;
                 case "number":
                     value = parseInt(value) || ((target.value = ""), null);
                     break;

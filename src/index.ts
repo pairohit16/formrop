@@ -6,9 +6,7 @@ type Modifier<V> = (value: V) => V;
 type FromDate<V> = (value: Date) => V;
 type FromDateTime<V> = (value: number) => V;
 type ToDate<V> = (value: V) => string;
-export function useFormrop<S>(
-  initState: S | (() => S)
-): [
+export function useFormrop<S>(initState: S | (() => S)): [
   S,
   (
     event: ChangeEvent<
@@ -119,7 +117,7 @@ export function useFormrop<S>(
       HTMLSelectElement
     >;
     Submit: (props: {
-      onSumit: Function;
+      onSubmit: Function;
       disabled?: boolean;
       children?: string;
       className?: string;
@@ -146,6 +144,10 @@ export function useFormrop<S>(
 
       let value: string | number | boolean | Date = target.value || "";
       switch (type) {
+        case "text":
+        case "textarea":
+          value = value.length > 0 ? value : ((target.value = ""), null as any);
+          break;
         case "number":
           value = parseInt(value) || ((target.value = ""), null as any);
           break;
@@ -303,11 +305,11 @@ export function useFormrop<S>(
             })
           ) as any;
         },
-        Submit: ({ onSumit, ...props }) =>
+        Submit: ({ onSubmit, ...props }) =>
           React.createElement("button", {
             ...props,
             type: "button",
-            onClick: () => onSumit(),
+            onClick: () => onSubmit(),
           }),
       }),
       []
@@ -315,9 +317,7 @@ export function useFormrop<S>(
   ];
 }
 
-export function useFormropArrays<S>(
-  initState: S[]
-): [
+export function useFormropArrays<S>(initState: S[]): [
   S[],
   (
     event: ChangeEvent<
@@ -462,6 +462,10 @@ export function useFormropArrays<S>(
 
       let value: string | number | boolean | Date = target.value || "";
       switch (type) {
+        case "text":
+        case "textarea":
+          value = value.length > 0 ? value : ((target.value = ""), null as any);
+          break;
         case "number":
           value = parseInt(value) || ((target.value = ""), null as any);
           break;
