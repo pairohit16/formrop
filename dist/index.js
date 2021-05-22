@@ -61,9 +61,6 @@ function useFormrop(initState) {
                     value = target.checked;
                     break;
                 case "date":
-                    // @ts-ignore
-                    value = target.valueAsDate;
-                    break;
                 case "datetime-local":
                     // @ts-ignore
                     value = target.valueAsNumber;
@@ -76,15 +73,10 @@ function useFormrop(initState) {
                 value = modifier(value);
             }
             // for date modifier
-            if (target.type === "date") {
+            if (target.type === "datetime-local" || target.type === "date") {
                 const key = name + "" + deep;
-                const fromDate = formRopStore[key];
-                value = fromDate(value);
-            }
-            if (target.type === "datetime-local") {
-                const key = name + "" + deep;
-                const fromDate = formRopStore[key];
-                value = fromDate(value);
+                const FromTimestamp = formRopStore[key];
+                value = FromTimestamp(value);
             }
             setValue((preState) => {
                 if (deep)
@@ -128,15 +120,15 @@ function useFormrop(initState) {
                     ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
             Date: (_a) => {
-                var { deep, value, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "fromDate", "toDate"]);
+                var { deep, value, FromTimestamp, toDate } = _a, props = __rest(_a, ["deep", "value", "FromTimestamp", "toDate"]);
                 const key = props.name + "" + deep;
-                formRopStore[key] = fromDate;
+                formRopStore[key] = FromTimestamp;
                 return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "date", value: toDate(value), ["data-deep"]: deep }));
             },
             DateTime: (_a) => {
-                var { deep, value, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "fromDate", "toDate"]);
+                var { deep, value, FromTimestamp, toDate } = _a, props = __rest(_a, ["deep", "value", "FromTimestamp", "toDate"]);
                 const key = props.name + "" + deep;
-                formRopStore[key] = fromDate;
+                formRopStore[key] = FromTimestamp;
                 return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "datetime-local", value: toDate(value), ["data-deep"]: deep }));
             },
             TextArea: (_a) => {
@@ -218,13 +210,8 @@ function useFormropArrays(initState) {
             // for date modifier
             if (target.type === "date" || target.type === "datetime-local") {
                 const key = name + "" + deep;
-                const fromDate = formRopStore[key];
-                value = fromDate(value);
-            }
-            if (target.type === "datetime-local") {
-                const key = name + "" + deep;
-                const fromDate = formRopStore[key];
-                value = fromDate(value);
+                const FromTimestamp = formRopStore[key];
+                value = FromTimestamp(value);
             }
             setValue((preState) => {
                 const copy = Array.from(preState);
@@ -260,15 +247,15 @@ function useFormropArrays(initState) {
                     ["data-index"]: index, ["data-modifier"]: !!modifier, ["data-deep"]: deep }));
             },
             Date: (_a) => {
-                var { deep, value, index, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "index", "fromDate", "toDate"]);
+                var { deep, value, index, FromTimestamp, toDate } = _a, props = __rest(_a, ["deep", "value", "index", "FromTimestamp", "toDate"]);
                 const key = props.name + "" + deep;
-                formRopStore[key] = fromDate;
+                formRopStore[key] = FromTimestamp;
                 return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "datetime", value: toDate(value), ["data-index"]: index, ["data-deep"]: deep }));
             },
             DateTime: (_a) => {
-                var { deep, value, index, fromDate, toDate } = _a, props = __rest(_a, ["deep", "value", "index", "fromDate", "toDate"]);
+                var { deep, value, index, FromTimestamp, toDate } = _a, props = __rest(_a, ["deep", "value", "index", "FromTimestamp", "toDate"]);
                 const key = props.name + "" + deep;
-                formRopStore[key] = fromDate;
+                formRopStore[key] = FromTimestamp;
                 return react_1.default.createElement("input", Object.assign(Object.assign({}, props), { type: "datetime-local", value: toDate(value), ["data-index"]: index, ["data-deep"]: deep }));
             },
             TextArea: (_a) => {

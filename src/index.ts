@@ -3,8 +3,7 @@ import React, { ChangeEvent, useMemo, useState } from "react";
 const formRopStore = {};
 
 type Modifier<V> = (value: V) => V;
-type FromDate<V> = (value: Date) => V;
-type FromDateTime<V> = (value: number) => V;
+type FromTimestamp<V> = (value: number) => V;
 type ToDate<V> = (value: V) => string;
 export function useFormrop<S>(initState: S | (() => S)): [
   S,
@@ -19,7 +18,7 @@ export function useFormrop<S>(initState: S | (() => S)): [
     Input: <N extends keyof S, V>(props: {
       type: "url" | "text" | "number";
       name: N;
-      deep?: keyof S[N];
+      deep?: keyof NonNullable<S[N]>;
       value: V;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       modifier?: Modifier<V>;
@@ -35,10 +34,10 @@ export function useFormrop<S>(initState: S | (() => S)): [
     >;
     Date: <N extends keyof S, V>(props: {
       name: N;
-      deep?: keyof S[N];
+      deep?: keyof NonNullable<S[N]>;
       value: V;
       toDate: ToDate<V>;
-      fromDate: FromDate<V>;
+      FromTimestamp: FromTimestamp<V>;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       disabled?: boolean | undefined;
       readOnly?: boolean | undefined;
@@ -52,10 +51,10 @@ export function useFormrop<S>(initState: S | (() => S)): [
     >;
     DateTime: <N extends keyof S, V>(props: {
       name: N;
-      deep?: keyof S[N];
+      deep?: keyof NonNullable<S[N]>;
       value: V;
       toDate: ToDate<V>;
-      fromDate: FromDateTime<V>;
+      FromTimestamp: FromTimestamp<V>;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       disabled?: boolean | undefined;
       readOnly?: boolean | undefined;
@@ -69,7 +68,7 @@ export function useFormrop<S>(initState: S | (() => S)): [
     >;
     TextArea: <N extends keyof S>(props: {
       name: N;
-      deep?: keyof S[N];
+      deep?: keyof NonNullable<S[N]>;
       value: string;
       onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
       disabled?: boolean;
@@ -85,7 +84,7 @@ export function useFormrop<S>(initState: S | (() => S)): [
     CheckBox: <N extends keyof S>(props: {
       label: string;
       name: N;
-      deep?: keyof S[N];
+      deep?: keyof NonNullable<S[N]>;
       value: boolean;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       className?: string;
@@ -96,7 +95,7 @@ export function useFormrop<S>(initState: S | (() => S)): [
     >;
     Selection: <N extends keyof S>(props: {
       name: N;
-      deep?: keyof S[N];
+      deep?: keyof NonNullable<S[N]>;
       value: string | number;
       /** {
        *    value1: label1,
@@ -161,9 +160,6 @@ export function useFormrop<S>(initState: S | (() => S)): [
           value = target.checked;
           break;
         case "date":
-          // @ts-ignore
-          value = target.valueAsDate;
-          break;
         case "datetime-local":
           // @ts-ignore
           value = target.valueAsNumber;
@@ -178,16 +174,10 @@ export function useFormrop<S>(initState: S | (() => S)): [
       }
 
       // for date modifier
-      if (target.type === "date") {
+      if (target.type === "datetime-local" || target.type === "date") {
         const key = name + "" + deep;
-        const fromDate = formRopStore[key] as FromDate<Date>;
-        value = fromDate(value as Date);
-      }
-
-      if (target.type === "datetime-local") {
-        const key = name + "" + deep;
-        const fromDate = formRopStore[key] as any;
-        value = fromDate(value as number);
+        const FromTimestamp = formRopStore[key] as any;
+        value = FromTimestamp(value as number);
       }
 
       setValue((preState) => {
@@ -239,9 +229,9 @@ export function useFormrop<S>(initState: S | (() => S)): [
             ["data-deep"]: deep,
           }) as any;
         },
-        Date: ({ deep, value, fromDate, toDate, ...props }) => {
+        Date: ({ deep, value, FromTimestamp, toDate, ...props }) => {
           const key = props.name + "" + deep;
-          formRopStore[key] = fromDate;
+          formRopStore[key] = FromTimestamp;
           return React.createElement("input", {
             ...props,
             type: "date",
@@ -249,9 +239,9 @@ export function useFormrop<S>(initState: S | (() => S)): [
             ["data-deep"]: deep,
           }) as any;
         },
-        DateTime: ({ deep, value, fromDate, toDate, ...props }) => {
+        DateTime: ({ deep, value, FromTimestamp, toDate, ...props }) => {
           const key = props.name + "" + deep;
-          formRopStore[key] = fromDate;
+          formRopStore[key] = FromTimestamp;
           return React.createElement("input", {
             ...props,
             type: "datetime-local",
@@ -351,7 +341,7 @@ export function useFormropArrays<S>(initState: S[]): [
       value: V;
       index: number;
       toDate: ToDate<V>;
-      fromDate: FromDate<V>;
+      FromTimestamp: FromTimestamp<V>;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       disabled?: boolean | undefined;
       readOnly?: boolean | undefined;
@@ -369,7 +359,7 @@ export function useFormropArrays<S>(initState: S[]): [
       value: V;
       index: number;
       toDate: ToDate<V>;
-      fromDate: FromDate<V>;
+      FromTimestamp: FromTimestamp<V>;
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
       disabled?: boolean | undefined;
       readOnly?: boolean | undefined;
@@ -497,13 +487,8 @@ export function useFormropArrays<S>(initState: S[]): [
       // for date modifier
       if (target.type === "date" || target.type === "datetime-local") {
         const key = name + "" + deep;
-        const fromDate = formRopStore[key] as FromDate<Date>;
-        value = fromDate(value as Date);
-      }
-      if (target.type === "datetime-local") {
-        const key = name + "" + deep;
-        const fromDate = formRopStore[key] as FromDateTime<number>;
-        value = fromDate(value as number);
+        const FromTimestamp = formRopStore[key] as FromTimestamp<number>;
+        value = FromTimestamp(value as number);
       }
 
       setValue((preState) => {
@@ -548,9 +533,9 @@ export function useFormropArrays<S>(initState: S[]): [
             ["data-deep"]: deep,
           }) as any;
         },
-        Date: ({ deep, value, index, fromDate, toDate, ...props }) => {
+        Date: ({ deep, value, index, FromTimestamp, toDate, ...props }) => {
           const key = props.name + "" + deep;
-          formRopStore[key] = fromDate;
+          formRopStore[key] = FromTimestamp;
 
           return React.createElement("input", {
             ...props,
@@ -560,9 +545,9 @@ export function useFormropArrays<S>(initState: S[]): [
             ["data-deep"]: deep,
           }) as any;
         },
-        DateTime: ({ deep, value, index, fromDate, toDate, ...props }) => {
+        DateTime: ({ deep, value, index, FromTimestamp, toDate, ...props }) => {
           const key = props.name + "" + deep;
-          formRopStore[key] = fromDate;
+          formRopStore[key] = FromTimestamp;
 
           return React.createElement("input", {
             ...props,

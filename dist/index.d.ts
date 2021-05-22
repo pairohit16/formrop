@@ -1,13 +1,12 @@
 import React, { ChangeEvent } from "react";
 declare type Modifier<V> = (value: V) => V;
-declare type FromDate<V> = (value: Date) => V;
-declare type FromDateTime<V> = (value: number) => V;
+declare type FromTimestamp<V> = (value: number) => V;
 declare type ToDate<V> = (value: V) => string;
 export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void, (key: Partial<S>) => void, (initWith?: Partial<S>, merge?: boolean) => void, {
     Input: <N extends keyof S, V>(props: {
         type: "url" | "text" | "number";
         name: N;
-        deep?: keyof S[N];
+        deep?: keyof NonNullable<S[N]>;
         value: V;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         modifier?: Modifier<V>;
@@ -20,10 +19,10 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     Date: <N extends keyof S, V>(props: {
         name: N;
-        deep?: keyof S[N];
+        deep?: keyof NonNullable<S[N]>;
         value: V;
         toDate: ToDate<V>;
-        fromDate: FromDate<V>;
+        FromTimestamp: FromTimestamp<V>;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         disabled?: boolean | undefined;
         readOnly?: boolean | undefined;
@@ -34,10 +33,10 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     DateTime: <N extends keyof S, V>(props: {
         name: N;
-        deep?: keyof S[N];
+        deep?: keyof NonNullable<S[N]>;
         value: V;
         toDate: ToDate<V>;
-        fromDate: FromDateTime<V>;
+        FromTimestamp: FromTimestamp<V>;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         disabled?: boolean | undefined;
         readOnly?: boolean | undefined;
@@ -48,7 +47,7 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     TextArea: <N extends keyof S>(props: {
         name: N;
-        deep?: keyof S[N];
+        deep?: keyof NonNullable<S[N]>;
         value: string;
         onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
         disabled?: boolean;
@@ -61,7 +60,7 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
     CheckBox: <N extends keyof S>(props: {
         label: string;
         name: N;
-        deep?: keyof S[N];
+        deep?: keyof NonNullable<S[N]>;
         value: boolean;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         className?: string;
@@ -69,7 +68,7 @@ export declare function useFormrop<S>(initState: S | (() => S)): [S, (event: Cha
     }) => React.DetailedReactHTMLElement<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
     Selection: <N extends keyof S>(props: {
         name: N;
-        deep?: keyof S[N];
+        deep?: keyof NonNullable<S[N]>;
         value: string | number;
         /** {
          *    value1: label1,
@@ -117,7 +116,7 @@ export declare function useFormropArrays<S>(initState: S[]): [S[], (event: Chang
         value: V;
         index: number;
         toDate: ToDate<V>;
-        fromDate: FromDate<V>;
+        FromTimestamp: FromTimestamp<V>;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         disabled?: boolean | undefined;
         readOnly?: boolean | undefined;
@@ -132,7 +131,7 @@ export declare function useFormropArrays<S>(initState: S[]): [S[], (event: Chang
         value: V;
         index: number;
         toDate: ToDate<V>;
-        fromDate: FromDate<V>;
+        FromTimestamp: FromTimestamp<V>;
         onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
         disabled?: boolean | undefined;
         readOnly?: boolean | undefined;
