@@ -93,10 +93,10 @@ export function useFormrop<S>(initState: S | (() => S)): [
       React.InputHTMLAttributes<HTMLInputElement>,
       HTMLInputElement
     >;
-    Selection: <N extends keyof S>(props: {
+    Selection: <N extends keyof S, V>(props: {
       name: N;
       deep?: keyof NonNullable<S[N]>;
-      value: string | number;
+      value: V;
       /** {
        *    value1: label1,
        *    value2: label2,
@@ -105,8 +105,10 @@ export function useFormrop<S>(initState: S | (() => S)): [
        *    0: 'Don't include',
        *    1: 'Yes, i am in',
        *    ....
-       * } */
-      data: Object;
+       * }
+       * */
+      // @ts-ignore
+      data: { [Data in V]: string | number };
       onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
       className?: string;
       id?: string;
@@ -400,11 +402,11 @@ export function useFormropArrays<S>(initState: S[]): [
       React.InputHTMLAttributes<HTMLInputElement>,
       HTMLInputElement
     >;
-    Selection: (props: {
+    Selection: <V>(props: {
       index: number;
       name: string;
       deep?: string;
-      value: string | number;
+      value: V;
       /** {
        *    value1: label1,
        *    value2: label2,
@@ -414,7 +416,8 @@ export function useFormropArrays<S>(initState: S[]): [
        *    1: 'Yes, i am in',
        *    ....
        * } */
-      data: Object;
+      // @ts-ignore
+      data: { [Data in V]: string | number };
       onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
       className?: string;
       id?: string;
